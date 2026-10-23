@@ -7,7 +7,7 @@ import sys
 import os
 
 
-from PyQt6.QtCore import Qt, QTimer, QUrl, pyqtSignal, QRectF
+from PyQt6.QtCore import QEvent, Qt, QTimer, QUrl, pyqtSignal, QRectF
 from PyQt6.QtGui import (
     QDesktopServices,
     QFontMetricsF,
@@ -1010,14 +1010,27 @@ class FinditSAPUI(QWidget):
         # self.open_button.setEnabled(self.findit_list.currentItem() is not None)
         self.open_all_button.setEnabled(self.findit_list.count() > 0)
 
-    def showEvent(self, event) -> None:
-        self.adjustSize()
+    def showEvent(self, event):
+        super().showEvent(event)
         self.search_edit.setFocus()
         # Apply 50/50 once the splitter has a real width.
         if not self._initial_split_applied:
             self._initial_split_applied = True
             QTimer.singleShot(0, self._set_equal_panel_sizes)
         super().showEvent(event)
+        QTimer.singleShot(0, self._restore_size)
+        print("finditsap ui size", self.size())
+    
+    def _restore_size(self, *_):
+        # width is halved when only one panel has results (see check_emptiness)
+        self.resize(self._width, self._height)
+
+    # def event(self, e):
+    #     t = getattr(QEvent.Type, "DevicePixelRatioChange", None)  # Qt >= 6.6
+    #     if t is not None and e.type() == t:
+    #         print("DevicePixelRatioChange")
+    #         QTimer.singleShot(0, self._restore_size)
+    #     return super().event(e)
 
     def _set_equal_panel_sizes(self) -> None:
         half = self.splitter.width() // 2
