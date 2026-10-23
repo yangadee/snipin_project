@@ -1,0 +1,4 @@
+*.pyc
+__pycache__/
+app.log
+app.log
