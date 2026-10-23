@@ -1,6 +1,6 @@
 # snipin_project
 
-# Create environment:
+# Create environment
 
     python -m pip install dxcam pyqt6 pywin32 comtypes pyqt6 requests bs4
     python -m pip install --no-binary numpy numpy
