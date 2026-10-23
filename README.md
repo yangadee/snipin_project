@@ -1,4 +1,9 @@
 # snipin_project
+
+#Create environment:
+    python -m pip install dxcam pyqt6 pywin32 comtypes pyqt6 requests bs4
+    python -m pip install --no-binary numpy numpy
+
 - Snipaste-like protol: initial version with 1-screen support
 - Snipaste-like v0.2: support multiple screen, rename to Snipin Main v0.2
     - reorganaize architecture
