@@ -1,6 +1,7 @@
 # --- Nuitka compile config （Do not remove) ---
 # nuitka-project: --standalone
 ## nuitka-project: --lto=yes
+## nuitka-project: --msvc=latest
 ## nuitka-project: --mingw64
 # nuitka-project: --output-dir=dist
 # nuitka-project: --enable-plugin=pyqt6
