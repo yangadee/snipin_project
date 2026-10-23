@@ -124,20 +124,6 @@ if __name__ == "__main__":
         palette.setColor(QPalette.ColorRole.Shadow, QColor("#505050"))
 
         app.setPalette(palette)
-        # app.setStyleSheet("""
-        #     QMessageBox QPushButton {
-        #         color: #000000 !important;
-        #         background-color: #f0f0f0 !important;
-        #         border: 1px solid #707070;
-        #         border-radius: 4px;
-        #         padding: 5px 15px;
-        #         min-width: 65px;
-        #     }
-        #     QMessageBox QPushButton:hover {
-        #         background-color: #e5e5e5 !important;
-        #     }
-        # """)
-        # app.setStyle("Fusion")
         app.setQuitOnLastWindowClosed(False)
         app_icon = icon_provider.icon(AppInfo.APPICON)
         app.setWindowIcon(app_icon)
