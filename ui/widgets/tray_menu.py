@@ -87,7 +87,7 @@ class TrayMenu(QObject):
         self.snip_action = TrayAction(
             "Snip screen", "", AppIcon.icon("snip"), self.tray_menu
         )
-        self.snip_action.triggered.connect(self.handle_snapshot_click)
+        self.snip_action.triggered.connect(self.handle_snip_click)
         # self.snip_action.triggered.connect(self.snapshot_requested)
 
         self.close_pins_action = TrayAction(
@@ -140,7 +140,98 @@ class TrayMenu(QObject):
         # Bind the built menu to the tray object
         self.tray_icon.setContextMenu(self.tray_menu)
 
-    def handle_snapshot_click(self):
+
+    def create_tray_menu(self):
+        """Creates the right-click context menu and keeps references to actions."""
+        self.tray_menu = QMenu()
+        self.tray_menu.setStyleSheet("""
+            QMenu {
+                background-color: #ffffff;
+                color: #000000;
+                border: 1px solid #cccccc;
+                padding: 5px;
+            }
+            QMenu::icon {
+                vertical-align: middle;
+                position: relative;
+                /* top-bottom left-right ; */
+                margin: 2px 7px;
+            }
+            QMenu::separator {
+                height: 1px;
+                background-color: #DCDCDC;
+                /* top-bottom left-right ; */
+                margin: 3px 10px;
+            }
+            QMenu::item {
+                /* top right down left ; */
+                padding: 2px 15px 2px 15px;
+                border-radius: 4px;
+                margin: 2px 0px;
+            }
+            QMenu::item:selected {
+                background-color: #e5f1fb;
+                color: #0066cc;
+            }
+            QMenu::indicator {
+                width: 18px;
+                left: 6px;
+            }
+
+        """)
+
+        # Let controller determine the action's callback
+        self.snip_action = Action(AppIcon.icon("snip"), "Snip screen", self.tray_menu)
+        # self.snip_action.setShortcut("F1")
+        self.snip_action.triggered.connect(self.handle_snip_click)
+        # self.snip_action.triggered.connect(self.snapshot_requested)
+
+        self.close_pins_action = Action("Close all pins", self.tray_menu)
+        self.close_pins_action.triggered.connect(self.close_pins_requested)
+
+        # Emits True when enable(registered), False when disable(un-register)
+        self.hotkeys_enabled_action = Action("Enable hotkeys", self.tray_menu)
+        self.hotkeys_enabled_action.setCheckable(True)
+        self.hotkeys_enabled_action.triggered.connect(self.hotkeys_enabled_changed)
+
+        # Emits True when paused/suppressed, False when active
+        self.hotkeys_suspended_action = Action("Suspend hotkeys", self.tray_menu)
+        self.hotkeys_suspended_action.setCheckable(True)
+        self.hotkeys_suspended_action.triggered.connect(self.hotkeys_suspended_changed)
+
+        settings_action = Action(AppIcon.icon("settings"), "Preference", self)
+        settings_action.triggered.connect(self.settings_dialog_requested)
+
+        # About
+        about_action = Action(AppIcon.icon("about"), "About", self.tray_menu)
+        about_action.triggered.connect(self.show_about)
+
+        # Add 'Exit' action
+        self._quit_action = Action(AppIcon.icon("quit"), "Quit", self.tray_menu)
+        self._quit_action.triggered.connect(self.exit_requested)
+
+        self.tray_menu.addAction(self.snip_action)
+        self.tray_menu.addAction(self.close_pins_action)
+        self.tray_menu.addSeparator()
+        # Plugin
+        self._plugin_separator = self.tray_menu.addSeparator()
+
+        self.tray_menu.addAction(self.hotkeys_enabled_action)
+        self.tray_menu.addAction(self.hotkeys_suspended_action)
+
+        # Helpers.
+        self.tray_menu.addSeparator()
+        self.tray_menu.addAction(settings_action)
+        self.tray_menu.addAction(about_action)
+
+        self.tray_menu.addSeparator()
+        self.tray_menu.addAction(self._quit_action)
+
+        # self.tray_menu.aboutToShow.connect(self.refresh_tray_menu)
+        # Bind the built menu to the tray object
+        self.tray_icon.setContextMenu(self.tray_menu)
+
+    def handle_snip_click(self):
         self.close_menu_and_overflow()
         QTimer.singleShot(100, lambda: self.snapshot_requested.emit())
 
@@ -155,7 +246,6 @@ class TrayMenu(QObject):
             )
             if not hwnd_overflow:
                 hwnd_overflow = user32.FindWindowW("NotifyIconOverflowWindow", None)
-
             if hwnd_overflow:
                 ctypes.windll.user32.ShowWindow(hwnd_overflow, 0)  # SW_HIDE
         except Exception as e:
@@ -266,95 +356,6 @@ class TrayMenu(QObject):
                 pass
             self.tray_icon.deleteLater()
             self.tray_icon = None
-
-    def create_tray_menu(self):
-        """Creates the right-click context menu and keeps references to actions."""
-        self.tray_menu = QMenu()
-        self.tray_menu.setStyleSheet("""
-            QMenu {
-                background-color: #ffffff;
-                color: #000000;
-                border: 1px solid #cccccc;
-                padding: 5px;
-            }
-            QMenu::icon {
-                vertical-align: middle;
-                position: relative;
-                /* top-bottom left-right ; */
-                margin: 2px 7px;
-            }
-            QMenu::separator {
-                height: 1px;
-                background-color: #DCDCDC;
-                /* top-bottom left-right ; */
-                margin: 3px 10px;
-            }
-            QMenu::item {
-                /* top right down left ; */
-                padding: 2px 15px 2px 15px;
-                border-radius: 4px;
-                margin: 2px 0px;
-            }
-            QMenu::item:selected {
-                background-color: #e5f1fb;
-                color: #0066cc;
-            }
-            QMenu::indicator {
-                width: 18px;
-                left: 6px;
-            }
-
-        """)
-
-        # Let controller determine the action's callback
-        self.snip_action = Action(AppIcon.icon("snip"), "Snip screen", self.tray_menu)
-        # self.snip_action.setShortcut("F1")
-        self.snip_action.triggered.connect(self.snapshot_requested)
-
-        self.close_pins_action = Action("Close all pins", self.tray_menu)
-        self.close_pins_action.triggered.connect(self.close_pins_requested)
-
-        # Emits True when enable(registered), False when disable(un-register)
-        self.hotkeys_enabled_action = Action("Enable hotkeys", self.tray_menu)
-        self.hotkeys_enabled_action.setCheckable(True)
-        self.hotkeys_enabled_action.triggered.connect(self.hotkeys_enabled_changed)
-
-        # Emits True when paused/suppressed, False when active
-        self.hotkeys_suspended_action = Action("Suspend hotkeys", self.tray_menu)
-        self.hotkeys_suspended_action.setCheckable(True)
-        self.hotkeys_suspended_action.triggered.connect(self.hotkeys_suspended_changed)
-
-        settings_action = Action(AppIcon.icon("settings"), "Preference", self)
-        settings_action.triggered.connect(self.settings_dialog_requested)
-
-        # About
-        about_action = Action(AppIcon.icon("about"), "About", self.tray_menu)
-        about_action.triggered.connect(self.show_about)
-
-        # Add 'Exit' action
-        self._quit_action = Action(AppIcon.icon("quit"), "Quit", self.tray_menu)
-        self._quit_action.triggered.connect(self.exit_requested)
-
-        self.tray_menu.addAction(self.snip_action)
-        self.tray_menu.addAction(self.close_pins_action)
-        self.tray_menu.addSeparator()
-        # Plugin
-        self._plugin_separator = self.tray_menu.addSeparator()
-
-        self.tray_menu.addAction(self.hotkeys_enabled_action)
-        self.tray_menu.addAction(self.hotkeys_suspended_action)
-
-        # Helpers.
-        self.tray_menu.addSeparator()
-        self.tray_menu.addAction(settings_action)
-        self.tray_menu.addAction(about_action)
-
-        self.tray_menu.addSeparator()
-        self.tray_menu.addAction(self._quit_action)
-
-        # self.tray_menu.aboutToShow.connect(self.refresh_tray_menu)
-        # Bind the built menu to the tray object
-        self.tray_icon.setContextMenu(self.tray_menu)
 
     # def refresh_tray_menu(self):
     #     print("Force reset traymenu")
