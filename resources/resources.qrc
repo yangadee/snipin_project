@@ -1,0 +1,50 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+	<file>icons/done.png</file>
+	<file>icons/failed.png</file>
+	<file>icons/warning.png</file>
+    <file>icons/snipin.png</file>
+    <file>icons/cursor.png</file>
+    <file>icons/circle.png</file>
+    <file>icons/pen.png</file>
+    <file>icons/rect.png</file>
+    <file>icons/rect_circle.png</file>
+    <file>icons/ellipse.png</file>
+    <file>icons/arrow.png</file>
+    <file>icons/arrow_line.png</file>
+    <file>icons/line.png</file>
+    <file>icons/text.png</file>
+    <file>icons/redo.png</file>
+    <file>icons/undo.png</file>
+    <file>icons/close.png</file>
+    <file>icons/close2.png</file>
+    <file>icons/pin.png</file>
+    <file>icons/copy.png</file>
+    <file>icons/save.png</file>
+    <file>icons/highlight.png</file>
+    <file>icons/marker.png</file>
+    <file>icons/fill_up.png</file>
+    <file>icons/plugin.png</file>
+    <file>icons/blur.png</file>
+    <file>icons/mosaic.png</file>
+    <file>icons/search.png</file>
+    <file>icons/sap.png</file>
+    <file>icons/clipboard.png</file>
+    <file>icons/node.png</file>
+    <file>icons/hexagon.png</file>
+    <file>icons/settings.png</file>
+    <file>icons/snip.png</file>
+    <file>icons/quit.png</file>
+    <file>icons/about.png</file>
+    <file>icons/air.png</file>
+    <file>icons/cerberus.png</file>
+    <file>icons/procedure.png</file>
+    <file>icons/material.png</file>
+    <file>icons/service_order.png</file>
+</qresource>
+</RCC>
+<!-- 
+  To compile this file into Python source code, run the following command in your terminal:
+  python -m PyQt5.pyrcc_main resources.qrc -o resources_rc.py
+  Note: modify PyQt5 to PyQt6 in the .py if using PyQt6
+-->

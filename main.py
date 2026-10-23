@@ -58,48 +58,6 @@ How to compile:
 - python -m nuitka main_snipin_1.0.0
 """
 
-"""
-┌──────────────────────────────┐
-│        SnipAppController     │
-│  hotkeys / tray / lifecycle  │
-│                              │
-│  viewers[]                   │
-│  overlays[]                  │
-│  closed_pin_image_queue[]    │
-└──────────────┬───────────────┘
-               │
-               │ start area snip
-               ▼
-┌──────────────────────────────┐
-│          SnipOverlay         │
-│  fullscreen selection layer  │
-│                              │
-│  captures screen             │
-│  selects crop rect           │
-│  creates embedded editor     │
-└──────────────┬───────────────┘
-               │ editor_created
-               ▼
-┌──────────────────────────────┐
-│        PinGraphicsView        │
-│ embedded editor or pin window │
-│                              │
-│  QGraphicsScene              │
-│  screenshot pixmap           │
-│  drawing items               │
-│  toolbar                     │
-└──────────────┬───────────────┘
-               │ owns
-               ▼
-┌──────────────────────────────┐
-│        FloatingToolbar       │
-│  tools + sub settings        │
-│                              │
-│  ColorPalette                │
-│  width/font/fill controls    │
-└──────────────────────────────┘
-"""
-
 # ============================================================
 # MAIN
 # ============================================================
