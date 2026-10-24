@@ -56,7 +56,7 @@
 
 """
 How to compile:
-- python -m nuitka main_snipin_1.0.0
+- python -m nuitka main.py
 """
 
 # ============================================================
