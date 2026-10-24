@@ -21,7 +21,7 @@
   - Add auto_startup option.
   - Change modules name format: SettingsDialog,KeyMapper,ColorPalette,CompactSlider,DotSizeButton, EditableArrowItem,EditableTextItem,MosaicPenItem,InvisibleBoxLineItem
   - fix bug pin_viwer show taskbar. set as tool.
-- 2026/09/11 Snipaste-like v1.1.0:
+- 2026/09/11 Snipaste-like v1.1.0:`
   - change config settings GUI: add plugins, add auto startup
   - add win + mouse plugin, extend findit function.
   - change ico
@@ -60,3 +60,4 @@
 - 2026/10/20 1.3.5
   - Fix auto startup
   - Add debouncing pre-rebuild cameras.
+  - fix findit sap ui plugin UI scaling issue.
