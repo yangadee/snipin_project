@@ -2018,7 +2018,7 @@ QListWidget#resultList {
     color: #253B55;
 }
 QListWidget#resultList::item {
-    padding: 0px 5px;
+    padding: 2px 5px;
     border: 1px solid #E5EDF5;
     border-radius: 8px;
 }
