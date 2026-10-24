@@ -61,3 +61,4 @@
   - Fix auto startup
   - Add debouncing pre-rebuild cameras.
   - fix findit sap ui plugin UI scaling issue.
+  - fix traymenu snip bug
