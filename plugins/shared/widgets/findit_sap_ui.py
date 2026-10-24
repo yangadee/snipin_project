@@ -408,7 +408,9 @@ class FinditSAPUI(QWidget):
                 font-size: 20px;
                 font-weight: 750;
             }
-
+            QLabel#finditStatus{
+                font-size: 14px;
+            }
             QLabel#subtitle,
             QLabel#panelHint,
             QLabel#statusLabel {
@@ -475,7 +477,7 @@ class FinditSAPUI(QWidget):
             }
 
             QListWidget#resultList::item {
-                padding: 0px 5px;
+                padding: 5px 5px;
                 border: 1px solid #E5EDF5;
                 border-radius: 8px;
             }
@@ -582,7 +584,7 @@ class FinditSAPUI(QWidget):
 
         hint = QLabel(
             "Click a transaction to open it in SAP.",
-            panel,
+            panel
         )
         hint.setObjectName("panelHint")
         layout.addWidget(hint)
@@ -758,7 +760,7 @@ class FinditSAPUI(QWidget):
         self.findit_spinner.setVisible(searching)
         self.findit_stack.setCurrentWidget(self.findit_status_page)
 
-        self.findit_count.setText("Searching..." if searching else "Failed")
+        self.findit_count.setText("Searching..." if searching else "Not found")
         self.open_button.setEnabled(False)
         self.open_all_button.setEnabled(False)
 
@@ -1591,7 +1593,7 @@ class _FinditSAPUI(QWidget):
             QDesktopServices.openUrl(url)
 
     def check_emptiness(self):
-        return
+        # return
         is_sap_empty = self.sap_list.count() == 0
         is_findit_empty = self.findit_list.count() == 0
         if is_findit_empty:
