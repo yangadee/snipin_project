@@ -47,6 +47,7 @@ from plugins.shared.sap import SAPController, SAPOptions, SAP_OPERATIONS
 from resources.icon_provider import icon_provider as AppIcon
 import re
 
+
 @dataclass(frozen=True)
 class SapTransaction:
     code: str  # e.g. "MMBE"
@@ -1027,7 +1028,7 @@ class Spinner(QWidget):
 #         super().showEvent(event)
 #         # QTimer.singleShot(0, self._restore_size)
 #         print("finditsap ui size", self.size())
-    
+
 #     def _restore_size(self, *_):
 #         # width is halved when only one panel has results (see check_emptiness)
 #         self.resize(self._width, self._height)
@@ -1272,7 +1273,7 @@ class Spinner(QWidget):
 #             }
 #             QPushButton#lookupCloseButton {
 #                 min-width: 32px;  max-width: 32px;
-#                 min-height: 32px; max-height: 32px; 
+#                 min-height: 32px; max-height: 32px;
 #                 color: #52657A;
 #                 background: transparent;
 #                 border: none;
@@ -1876,7 +1877,7 @@ class Spinner(QWidget):
 #         self.layout().activate()          # refresh the minimum now, not later
 #         self._target = QSize(self.S(self._width), self.S(self._height))
 #         self.resize(self._target)
-        
+
 #     def showEvent(self, event) -> None:
 #         self.apply_scale()
 #         super().showEvent(event)
@@ -1890,11 +1891,11 @@ class Spinner(QWidget):
 #         # QTimer.singleShot(0, lambda: self.resize(self.S(self._width), self.S(self._height)))
 
 #         QTimer.singleShot(1000, lambda: print(self.minimumSizeHint(), self.minimumSize(), self.layout().minimumSize()))
-        
+
 
 #     # import traceback
 
-        
+
 #     def _set_equal_panel_sizes(self) -> None:
 #         half = self.splitter.width() // 2
 #         self.splitter.setSizes([half, half])
@@ -2164,6 +2165,9 @@ class FinditSAPUI(QWidget):
             sizes = [total // 2, total - total // 2]
         self.splitter.setSizes(sizes)
 
+        # sizes = [total // 2, total - total // 2]
+        # self.splitter.setSizes(sizes)
+
     # ------------------------------------------------------
     # Public entry point: use this instead of show()
     # ------------------------------------------------------
@@ -2282,8 +2286,11 @@ class FinditSAPUI(QWidget):
         content.addLayout(search_row)
         spacer_index = content.count()
         content.addSpacing(0)
-        reg(lambda S: content.itemAt(spacer_index).changeSize(
-            0, S(5), QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed))
+        reg(
+            lambda S: content.itemAt(spacer_index).changeSize(
+                0, S(5), QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed
+            )
+        )
 
         # ---- two panels ----
         self.splitter = QSplitter(Qt.Orientation.Horizontal, self)
@@ -2296,7 +2303,9 @@ class FinditSAPUI(QWidget):
 
         for panel in (self.sap_panel, self.findit_panel):
             # Ignored => the panel's content never sets a minimum for the window.
-            panel.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Expanding)
+            panel.setSizePolicy(
+                QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Expanding
+            )
 
         self.splitter.addWidget(self.sap_panel)
         self.splitter.addWidget(self.findit_panel)
@@ -2471,9 +2480,7 @@ class FinditSAPUI(QWidget):
 
     def check_emptiness(self, *_):
         # One panel visible => half-width window.
-        self._single_panel = (
-            self.findit_list.count() == 0 or self.sap_list.count() == 0
-        )
+        # self._single_panel = self.findit_list.count() == 0 or self.sap_list.count() == 0
         self._apply_size()
         QTimer.singleShot(0, self._layout_panels)
 
@@ -2733,6 +2740,8 @@ class FinditSAPUI(QWidget):
                 event.accept()
                 return
         super().mousePressEvent(event)
+
+
 if __name__ == "__main__":
     os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 
