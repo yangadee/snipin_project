@@ -66,14 +66,35 @@ class EditableTextItem(QGraphicsTextItem):
         )
 
     def keyPressEvent(self, event) -> None:
-        if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
-            if (
-                self.textInteractionFlags()
-                & Qt.TextInteractionFlag.TextEditorInteraction
-            ):
-                self.disable_editing()
-                event.accept()
-                return
+        # if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+        #     if (
+        #         self.textInteractionFlags()
+        #         & Qt.TextInteractionFlag.TextEditorInteraction
+        #     ):
+        #         self.disable_editing()
+        #         event.accept()
+        #         return
+        # super().keyPressEvent(event)
+
+        # Shift + Enter -> insert a new line
+        if (
+            event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter)
+            and event.modifiers() & Qt.KeyboardModifier.ShiftModifier
+        ):
+            cursor = self.textCursor()
+            # cursor.insertText("\n")
+            cursor.insertBlock()
+            self.setTextCursor(cursor)
+
+            event.accept()
+            return
+
+        # # Enter -> finish editing
+        # if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+        #     self.clearFocus()
+        #     event.accept()
+        #     return
+
         super().keyPressEvent(event)
 
     # =============================================================
