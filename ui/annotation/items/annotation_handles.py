@@ -71,6 +71,8 @@ class AnnotationHandles:
                 "top_right",
                 "bottom_left",
                 "bottom_right",
+                "middle_left",
+                "middle_right",
             )
             item.document().contentsChanged.connect(self.update_positions)
         elif isinstance(item, CustomNode):
@@ -156,6 +158,8 @@ class AnnotationHandles:
                 "top_right": rect.topRight(),
                 "bottom_left": rect.bottomLeft(),
                 "bottom_right": rect.bottomRight(),
+                "middle_left": QPointF(rect.left(), rect.center().y()),
+                "middle_right": QPointF(rect.right(), rect.center().y()),
             }
 
             for role, pos in points.items():
@@ -282,7 +286,7 @@ class AnnotationHandles:
             self.item.setRect(rect.normalized())
             self.update_positions()
 
-    def _resize_text(
+    def __resize_text(
         self,
         item: EditableTextItem,
         role: str,
@@ -313,6 +317,87 @@ class AnnotationHandles:
         current_size = font.pointSizeF()
         if current_size <= 0:
             current_size = 16.0
+        new_size = max(6.0, min(200.0, current_size * scale))
+
+        font.setPointSizeF(new_size)
+        item.setFont(font)
+
+    def _resize_text(
+        self,
+        item: EditableTextItem,
+        role: str,
+        scene_pos: QPointF,
+    ):
+        """
+        Add setextwidth() to warp text.
+        """
+        rect = item.boundingRect()
+
+        # Scene -> item-local coordinates
+        pos = item.mapFromScene(scene_pos)
+
+        # ------------------------------------------------------------
+        # LEFT / RIGHT:
+        # Resize text width only -> Qt wraps text automatically
+        # ------------------------------------------------------------
+        if role == "middle_right":
+            new_width = pos.x() - rect.left()
+            # Prevent collapsing too small
+            new_width = max(20.0, new_width)
+            item.setTextWidth(new_width)
+            return
+
+        if role == "middle_left":
+            # Keep the current RIGHT edge visually fixed
+            old_right_scene = item.mapToScene(QPointF(rect.right(), rect.top()))
+            new_width = rect.right() - pos.x()
+            new_width = max(20.0, new_width)
+            item.setTextWidth(new_width)
+            # boundingRect may change after setTextWidth()
+            new_rect = item.boundingRect()
+            # Move the item so the old right edge remains fixed
+            new_right_scene = item.mapToScene(QPointF(new_rect.right(), new_rect.top()))
+            item.moveBy(
+                old_right_scene.x() - new_right_scene.x(),
+                old_right_scene.y() - new_right_scene.y(),
+            )
+            return
+
+        # ------------------------------------------------------------
+        # CORNERS:
+        # Keep existing behavior -> scale font size
+        # ------------------------------------------------------------
+        if role == "bottom_right":
+            anchor = rect.topLeft()
+
+        elif role == "bottom_left":
+            anchor = rect.topRight()
+
+        elif role == "top_right":
+            anchor = rect.bottomLeft()
+
+        elif role == "top_left":
+            anchor = rect.bottomRight()
+
+        else:
+            return
+
+        current_distance = QLineF(anchor, rect.center()).length()
+
+        new_distance = QLineF(anchor, pos).length()
+
+        if current_distance <= 0:
+            return
+
+        # Use diagonal ratio
+        scale = new_distance / (current_distance * 2.0)
+
+        font = item.font()
+
+        current_size = font.pointSizeF()
+        if current_size <= 0:
+            current_size = 16.0
+
         new_size = max(6.0, min(200.0, current_size * scale))
 
         font.setPointSizeF(new_size)
