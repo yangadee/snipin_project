@@ -595,8 +595,20 @@ class ImageScene(QGraphicsScene):
         # ==================================================
         # ESC -> deselect annotation
         # ==================================================
+        if (
+            event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter)
+            and event.modifiers() & Qt.KeyboardModifier.ShiftModifier
+        ):
+            item = self.annotation_handles.item
+            # If text or node are editing, just continue...
+            if item is not None and hasattr(item, "is_editing"):
+                if item.is_editing():
+                    return super().keyPressEvent(event)
+
         if key in (Qt.Key.Key_Escape, Qt.Key.Key_Enter, Qt.Key.Key_Return):
-            if self.annotation_handles.item is not None:
+            item = self.annotation_handles.item
+            # if self.annotation_handles.item is not None:
+            if item is not None:
                 self.clear_annotation_selection()
                 event.accept()
                 return
